@@ -1,32 +1,23 @@
 package io.github.tubean.myspringcrud.controller;
 
 import io.github.tubean.myspringcrud.entity.User;
-import io.github.tubean.myspringcrud.repository.UserRepository;
 import io.github.tubean.myspringcrud.service.UserService;
-import io.github.tubean.myspringcrud.service.impl.UserServiceImpl;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,42 +30,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class UserControllerTest extends TestCase {
 
-    @Autowired
-    private WebApplicationContext wac;
-
     @Mock
     UserService userService;
-    @Mock
-    UserRepository userRepository;
+
     @Autowired
     private MockMvc mockMvc;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(new UserController(userService)).build();  //Construct MockMVC
     }
 
     @Test
     public void testGetAll() throws Exception {
-        User employee = new User("Duong", "Kidd", "0123019283");
+        User employee = new User();
         List<User> users = Arrays.asList(employee);
 
         when(userService.getAllUser()).thenReturn(users);
 
         mockMvc.perform(get("/user"))
                 .andExpect(status().isOk());
-
     }
 
     @Test
     public void testGetById() throws Exception {
-        User employee = new User("Duong", "Kidd", "0123019283");
+        User user = new User();
 
-        when(userService.findUserById(1L)).thenReturn(java.util.Optional.of(employee));
+        when(userService.findUserById(1L)).thenReturn(java.util.Optional.of(user));
 
-        mockMvc.perform(get("/user/{id}", 1))
+        mockMvc.perform(get("/user/{id}",1))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(employee));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(user))
+                .andDo(print());
     }
 
     @Test

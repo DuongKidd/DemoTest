@@ -34,7 +34,7 @@ public class UserController {
         Optional<User> users = userService.findUserById(id);
         APIResponse<User> responseData = new APIResponse<>();
         responseData.setStatus(HttpStatus.OK.value());
-        responseData.setMessage("Find by id customer successful");
+        responseData.setMessage("Find by id user successful");
         responseData.setData(users.get());
         return responseData;
     }
